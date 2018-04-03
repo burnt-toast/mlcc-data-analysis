@@ -14,6 +14,7 @@ func main() {
 	programMap := make(map[string]*program.Instance)
 	readFile("./2017NewSystemData.xlsx", programMap)
 	fmt.Println("Unique instances of programs: {}", len(programMap))
+
 	writer := report.Writer{ProgramData: programMap}
 	writer.GenerateAttendanceReport()
 }
