@@ -3,13 +3,21 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/burnt-toast/mlcc-data-analysis/program"
 )
 
 func main() {
-	xlsx, err := excelize.OpenFile("./2017programdata.xlsx")
+	programMap := make(map[string]*program.Instance)
+	readFile("./2017NewSystemData.xlsx", programMap)
+	fmt.Println("Unique instances of programs: {}", len(programMap))
+}
+
+//Reads the file into a map of program instances
+func readFile(path string, programMap map[string]*program.Instance) {
+	xlsx, err := excelize.OpenFile(path)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -18,7 +26,6 @@ func main() {
 	// Get all the rows in the Sheet1.
 	rows := xlsx.GetRows("Sheet1")
 	rowCount := 0
-	programMap := make(map[string]*program.Instance)
 	for _, row := range rows {
 		cellCount := 0
 		if rowCount != 0 { //do not process the header row
@@ -27,18 +34,18 @@ func main() {
 				processCell(&programInstance, colCell, cellCount)
 				cellCount++
 			}
-			uniqueID := programInstance.EventName + programInstance.StartDate
-
-			if val, ok := programMap[uniqueID]; ok {
-				val.Attendance++
-			} else {
-				programMap[uniqueID] = &programInstance
+			if !strings.Contains(programInstance.EventName, "CANCELLED") {
+				uniqueID := programInstance.EventName + programInstance.StartDate
+				if val, ok := programMap[uniqueID]; ok {
+					val.Attendance++
+				} else {
+					programMap[uniqueID] = &programInstance
+				}
 			}
 		}
 		rowCount++
 		cellCount = 0
 	}
-	//fmt.Println(programMap["Cold Photo02-18-17"].Attendance)
 	fmt.Println("Rows Processed: {}", rowCount-1) //dont count the header
 }
 
@@ -57,5 +64,7 @@ func processCell(programInstance *program.Instance, colCell string, cellCount in
 		programInstance.Capacity, _ = strconv.Atoi(colCell)
 	case 7:
 		programInstance.StartDate = colCell
+	case 8:
+		programInstance.StartTime = colCell
 	}
 }

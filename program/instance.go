@@ -9,4 +9,5 @@ type Instance struct {
 	Capacity    int
 	StartDate   string
 	Attendance  int
+	StartTime   string
 }
