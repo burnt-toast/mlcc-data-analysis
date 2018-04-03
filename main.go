@@ -7,12 +7,15 @@ import (
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/burnt-toast/mlcc-data-analysis/program"
+	"github.com/burnt-toast/mlcc-data-analysis/report"
 )
 
 func main() {
 	programMap := make(map[string]*program.Instance)
 	readFile("./2017NewSystemData.xlsx", programMap)
 	fmt.Println("Unique instances of programs: {}", len(programMap))
+	writer := report.Writer{ProgramData: programMap}
+	writer.GenerateAttendanceReport()
 }
 
 //Reads the file into a map of program instances
