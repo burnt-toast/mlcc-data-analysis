@@ -12,7 +12,7 @@ import (
 
 func main() {
 	programMap := make(map[string]*program.Instance)
-	readFile("./2017NewSystemData.xlsx", programMap)
+	readFile("./2017FiscalReportYearNewSystemData.xlsx", programMap)
 	fmt.Println("Unique instances of programs: {}", len(programMap))
 
 	writer := report.Writer{ProgramData: programMap}
@@ -34,6 +34,7 @@ func readFile(path string, programMap map[string]*program.Instance) {
 		cellCount := 0
 		if rowCount != 0 { //do not process the header row
 			programInstance := program.Instance{}
+			programInstance.Attendance++
 			for _, colCell := range row {
 				processCell(&programInstance, colCell, cellCount)
 				cellCount++
@@ -68,7 +69,11 @@ func processCell(programInstance *program.Instance, colCell string, cellCount in
 		programInstance.Capacity, _ = strconv.Atoi(colCell)
 	case 7:
 		programInstance.StartDate = colCell
+
 	case 8:
 		programInstance.StartTime = colCell
+	case 27:
+		programInstance.FreeOrPaid = colCell
 	}
+
 }

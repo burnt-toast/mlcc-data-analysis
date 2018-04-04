@@ -24,11 +24,11 @@ func (w *Writer) GenerateAttendanceReport() {
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	writer.Write([]string{"Source", "Category", "GenericName", "EventName", "Capacity", "StartDate", "StartTime", "Attendence", "Percent full"})
+	writer.Write([]string{"Source", "Category", "GenericName", "EventName", "Capacity", "StartDate", "StartTime", "Attendence", "Percent full", "FreeOrPaid"})
 	for _, v := range w.ProgramData {
 		percent := (float64(v.Attendance) / float64(v.Capacity)) * 100
 		percentString := strconv.FormatFloat(percent, 'f', 6, 64)
-		err := writer.Write([]string{v.Source, v.Category, v.GenericName, v.EventName, strconv.Itoa(v.Capacity), v.StartDate, v.StartTime, strconv.Itoa(v.Attendance), percentString})
+		err := writer.Write([]string{v.Source, v.Category, v.GenericName, v.EventName, strconv.Itoa(v.Capacity), v.StartDate, v.StartTime, strconv.Itoa(v.Attendance), percentString, v.FreeOrPaid})
 		checkError("Cannot write to file", err)
 	}
 }

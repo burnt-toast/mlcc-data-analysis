@@ -10,4 +10,5 @@ type Instance struct {
 	StartDate   string
 	Attendance  int
 	StartTime   string
+	FreeOrPaid  string
 }
